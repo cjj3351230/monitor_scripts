@@ -30,7 +30,7 @@ function get_mem_info(){
     mem_total_GB=$(printf "%.2f" `echo "scale=2;$mem_total_kB/1024/1024" | bc` )
     mem_free_GB=$(printf "%.2f" `echo "scale=2;$mem_free_kB/1024/1024" | bc`) 
     echo -e "内存大小共计:\t\t"$mem_total_GB" GB"
-    echo -e "空闲内存共计:\t\t"$mem_free_GB" GB"
+    echo -e "内存空闲共计:\t\t"$mem_free_GB" GB"
     echo -e "内存使用率为:\t\t"$mem_used_rate" %"
 #!
 }
