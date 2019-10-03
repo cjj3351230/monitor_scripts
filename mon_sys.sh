@@ -141,22 +141,38 @@ function get_release(){
 #!
 }
 
+# get kernel infomation
+function get_kernel(){
+    echo -e "内核信息:\t\t"$(uname -r)
+}
+
+
 #difine main function
 function main(){
     echo -e "\033[36m############ network information ##############\033[0m"
     get_network_info
+    echo ''
     echo -e "\033[36m############ memory information ###############\033[0m"
     get_mem_info
+    echo ''
     echo -e "\033[36m########## swap space information #############\033[0m"
     get_swap_info
+    echo  ''
     echo -e "\033[36m########## file system information ############\033[0m"
     get_file_system_info
+    echo  ''
     echo -e "\033[36m############# block information ###############\033[0m"
     get_block_info
+    echo ''
     echo -e "\033[36m############## cpu information ################\033[0m"
     get_cpu_info
+    echo  ''
     echo -e "\033[36m############ edition informatin ###############\033[0m"
     get_release
+    echo ''
+    echo -e "\033[36m############ kernel informatin ################\033[0m"
+    get_kernel
+    echo ''
 }
 
 main
