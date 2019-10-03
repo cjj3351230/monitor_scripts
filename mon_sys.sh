@@ -1,8 +1,8 @@
 #!/bin/bash
-#############################################
-# a script for monitor Linux system status  #
-#          update date: 2019-9-22           #
-#############################################
+#############################################################
+######### a script for monitor Linux system status  #########
+#########          update date: 2019-9-22           #########
+#############################################################
 
 
 #initialize and globalize variables
@@ -18,6 +18,10 @@ file_system_used_rate=''	#file system used rate
 block_size_all=0		#system block size(kB)
 block_usedsize_all=0		#system used block size(kB)
 local_ip_all=''			#all ip in this server
+cpu_name=''			#type of CPU for current server 
+cpu_num=''			#how much cpu in this server 
+cpu_cores=''			#how much cores in this server 
+server_rel=''			#Linux release informations
 
 
 #get memory's informations
@@ -71,7 +75,7 @@ function get_file_system_info(){
 
 function get_block_info(){
     block_allsize_list=$(lsblk | grep -v "loop"| grep ':0' | awk '{print $4}' | awk -F'G' '{print $1}')
-    block_usedsize_list=$(lsblk | grep -v -e ':0' -e 'NAME' | awk '{print $4}' | awk -F'G' '{print $1}')
+    block_usedsize_list=$(lsblk | grep -v -e ':0' -e 'NAME' | awk '{print $4}'|awk '/G/' | awk -F'G' '{print $1}')
 
     #calculate size about block multi-size and multi-size used information
     for simple_block_size in $block_allsize_list
@@ -96,6 +100,8 @@ function get_block_info(){
 function get_network_info(){
     local_ip_all=$(ifconfig | grep -w inet | awk '{print $2}')
     curl -I --connect-timeout 1 -m 1 www.baidu.com &> /dev/null
+
+#:<<!
     if [ $? -eq 0 ];then
         echo -e "能否访问外网:\t\tyes"
     else
@@ -104,8 +110,9 @@ function get_network_info(){
     echo "本机所有ip如下:"
     for ip in $local_ip_all
     do
-	echo "               "$ip
+	echo -e "\t\t\t"$ip
     done
+#!
 } 
 
 #get cpu informations
@@ -116,10 +123,22 @@ function get_cpu_info(){
     let per_cpu_cores=cpu_cores/cpu_num
     cpu_processors=$(cat /proc/cpuinfo | grep "processor" | wc -l)
     let per_core_logic=cpu_processors/cpu_cores
+
+#:<<!
     echo -e "cpu处理器型号:\t\t$cpu_name"
     echo -e "cpu处理器个数:\t\t$cpu_num"
     echo -e "单cpu核心数:\t\t$per_cpu_cores"
     echo -e "单cpu划分逻辑处理器数:\t$per_core_logic"
+#!
+}
+
+# get current server Linux release informations 
+function get_release(){
+    server_rel=$(cat /etc/redhat-release)
+
+#:<<!    
+    echo -e "本机Linux版本:\t\t$server_rel" 
+#!
 }
 
 #difine main function
@@ -136,6 +155,8 @@ function main(){
     get_block_info
     echo -e "\033[36m############## cpu information ################\033[0m"
     get_cpu_info
+    echo -e "\033[36m############ edition informatin ###############\033[0m"
+    get_release
 }
 
 main
